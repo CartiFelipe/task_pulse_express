@@ -4,27 +4,23 @@ import { ZodError } from 'zod';
 import { ErrorType } from '../shared';
 
 const handler = (error: Error, _: Request, res: Response, __: NextFunction) => {
-  console.log(`Error middleware : ${error.message}`);
-
   if (error instanceof AppError) {
     return res.status(error.status).json({
       erroType: error.type,
-      success: false,
       message: error.message,
     });
   }
 
   if (error instanceof ZodError) {
-    res.status(500).json({
+    return res.status(422).json({
       errorType: ErrorType.VALIDATION,
-      success: false,
-      message: error.issues,
+      message: 'Validation error!',
+      issues: error.issues,
     });
   }
 
   return res.status(500).json({
     errorType: ErrorType.INTERNAL_SERVER_ERROR,
-    success: false,
     message: 'Internal server error!',
   });
 };

@@ -8,18 +8,17 @@ export const createTaskSchema = z.object({
     .string()
     .min(1, 'The title is required')
     .max(100, 'The title cannot be longer than 100 characters'),
-  description: z
-    .string()
-    .max(50, 'The description cannot be longer than 50 characters')
-    .optional(),
+  description: z.string().trim().min(1, 'The description is required'),
   priority: z
     .enum([Priority.HIGH, Priority.MEDIUM, Priority.LOW])
     .default(Priority.LOW),
-
   status: z
     .enum([Status.DONE, Status.PENDING, Status.TODO])
     .default(Status.TODO),
+  createdAt: z.coerce.date().default(() => new Date()),
 });
+
+export const updateTaskSchema = createTaskSchema.partial();
 
 export function isTask(obj: any): obj is Task {
   return (
@@ -38,3 +37,4 @@ export function isTask(obj: any): obj is Task {
 }
 
 export type CreateTaskDTO = z.infer<typeof createTaskSchema>;
+export type UpdateTaskDTO = z.infer<typeof updateTaskSchema>;

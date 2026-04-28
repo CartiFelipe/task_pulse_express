@@ -2,3 +2,5 @@ node_modules
 build
 dist
 .env
+lib/generated/prisma
+ package-lock.json

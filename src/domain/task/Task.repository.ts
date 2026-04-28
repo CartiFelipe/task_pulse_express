@@ -1,35 +1,64 @@
+import { prisma } from 'lib/prisma';
 import { Priority } from '../../shared';
 import Status from '../../shared/enums/status';
 import Task from './Task.entity';
+import TaskMapper from './Task.mapperr';
+import { UpdateTaskDTO } from './Task.schema';
 
 export default class TaskRepository {
-  private static tasksMocks: Array<Task> = [
-    new Task(1, 'Task 1', 'Description for task 1', Priority.HIGH, Status.DONE),
-    new Task(
-      2,
-      'Task 2',
-      'Description for task 2',
-      Priority.MEDIUM,
-      Status.PENDING,
-    ),
-    new Task(3, 'Task 3', 'Description for task 3', Priority.HIGH, Status.DONE),
-  ];
-
-  public static getAll(): Array<Task> {
-    return this.tasksMocks.map((value) => value);
+  public static async getAll(): Promise<Array<Task>> {
+    return (await prisma.task.findMany()).map(TaskMapper.fromPrisma);
   }
 
-  public static getById(id: number): Task | undefined {
-    const task: Task | undefined = this.tasksMocks.find((t) => t.id === id);
+  public static async getById(id: number): Promise<Task | undefined> {
+    const pTask = await prisma.task.findUnique({ where: { id } });
+    if (!pTask) {
+      return undefined;
+    }
 
-    return task;
+    return TaskMapper.fromPrisma(pTask);
   }
 
-  public static createTask(task: Task) {
-    this.tasksMocks.push({
-      ...task,
-      id: this.tasksMocks.length + 1,
+  public static async createTask(task: Task) {
+    const pTask = await prisma.task.create({
+      data: {
+        title: task.title,
+        description: task.description,
+        priority: task.priority as Priority,
+        status: task.status as Status,
+      },
     });
-    return this.tasksMocks[this.tasksMocks.length - 1];
+    return TaskMapper.fromPrisma(pTask);
+  }
+
+  public static async updateTask(task: UpdateTaskDTO, id: number) {
+    const doesExists = await prisma.task.findUnique({ where: { id } });
+    if (!doesExists) {
+      return undefined;
+    }
+
+    const pTask = await prisma.task.update({
+      where: { id },
+      data: {
+        title: task.title,
+        description: task.description,
+        priority: task.priority as Priority,
+        status: task.status as Status,
+      },
+    });
+    return TaskMapper.fromPrisma(pTask);
+  }
+
+  public static async deleteTask(id: number) {
+    const pTask = await prisma.task.findUnique({ where: { id } });
+
+    if (!pTask) {
+      return undefined;
+    }
+    const deletedTask = TaskMapper.fromPrisma(pTask);
+
+    await prisma.task.delete({ where: { id } });
+
+    return TaskMapper.fromPrisma(deletedTask);
   }
 }

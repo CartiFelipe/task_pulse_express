@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "es2022",
-    "rootDir": "./src",
     "outDir": "./dist",
+    "baseUrl": "./",
+    "types": ["node"],
 
-    "module": "commonjs",
+    "module": "esnext",
+    // changed for prisma recommendation
+    "moduleResolution": "bundler",
 
     "esModuleInterop": true,
 
@@ -13,13 +17,16 @@
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    // "exactOptionalPropertyTypes": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src", "public"],
-  "exclude": ["node_modules"]
+  "include": ["src", "public", "prisma.config.ts"],
+  "exclude": ["node_modules", "lib/generated"]
 }
