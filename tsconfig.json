@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    "module": "commonjs",
+
+    "esModuleInterop": true,
+
+    "sourceMap": true,
+    "declaration": false, // Generates .d.ts files for use as a library
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedParameters": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "public"],
+  "exclude": ["node_modules"]
+}
