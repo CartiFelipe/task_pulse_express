@@ -11,22 +11,22 @@ export default class UserController {
     return res.status(201).json(user);
   };
 
-  public findAll = async (_: Request, res: Response) => {
-    const users = await this.service.findAll();
+  public getAll = async (_: Request, res: Response) => {
+    const users = await this.service.getAll();
 
     return res.status(200).json(users);
   };
 
-  public findById = async (req: Request, res: Response) => {
+  public getById = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const user = await this.service.findById(Number(id));
+    const user = await this.service.getById(Number(id));
 
     return res.status(200).json(user);
   };
 
-  public deleteById = async (req: Request, res: Response) => {
+  public delete = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const user = await this.service.deleteById(Number(id));
+    const user = await this.service.delete(Number(id));
 
     return res.status(200).json(user);
   };

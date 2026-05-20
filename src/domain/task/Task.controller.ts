@@ -1,41 +1,51 @@
 import { Request, Response } from 'express';
-import { CreateTaskDTO, Task, TaskMapper, TaskService } from '../index';
-import { UpdateTaskDTO } from './Task.schema';
+
+import Task from './Task.entity';
+import TaskMapper from './Task.mapperr';
+import TaskService from './Task.services';
+import { CreateTaskDTO } from './Task.schema';
 
 export default class TaskController {
-  public static async createTask(
-    req: Request<{}, {}, CreateTaskDTO>,
-    res: Response,
-  ) {
+  constructor(private readonly service: TaskService) {}
+  public createTask = async (req: Request, res: Response) => {
     const { title, description, priority, status } = req.body;
+    const user = req.user;
 
-    const task = new Task(1, title, description, priority, status);
-
-    const dto: CreateTaskDTO = TaskMapper.toDTO(
-      await TaskService.createTask(task),
+    const task = new Task(
+      1,
+      title,
+      description,
+      priority,
+      status,
+      new Date(),
+      user.id,
     );
+
+    // const createdTask = await this.service.createTask(task, userId);
+    const createdTask = await this.service.createTask(task);
+
+    const dto: CreateTaskDTO = TaskMapper.toDTO(createdTask);
+
     res.status(201).json(dto);
-  }
+  };
 
-  public static async getAllTasks(_: Request, res: Response) {
-    // qual foi desse createtaskdto[]?
-    const tasks: CreateTaskDTO[] = await TaskService.getAll();
+  public getAllTasks = async (req: Request, res: Response) => {
+    const tasks = await this.service.getAll(req.user.id);
+
     res.status(200).json(tasks);
-  }
+  };
 
-  public static async getTaskById(req: Request, res: Response) {
+  public getTaskById = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const task = await TaskService.getById(Number(id));
-    res.status(200).json(task);
-  }
+    const task = await this.service.getById(Number(id), req.user.id);
 
-  public static async updateTask(
-    req: Request<{ id: string }, {}, UpdateTaskDTO>,
-    res: Response,
-  ) {
+    res.status(200).json(task);
+  };
+
+  public updateTask = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, description, priority, status } = req.body;
-    const updatedTask = await TaskService.updateTask(
+    const updatedTask = await this.service.updateTask(
       {
         title,
         description,
@@ -43,14 +53,16 @@ export default class TaskController {
         status,
       },
       Number(id),
+      req.user.id,
     );
 
     res.status(200).json(TaskMapper.toDTO(updatedTask));
-  }
-  public static async deleteTask(req: Request, res: Response) {
-    const { id } = req.params;
-    const deleted = await TaskService.deleteTask(Number(id));
+  };
 
-    res.status(200).json(TaskMapper.toDTO(deleted));
-  }
+  public deleteTask = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const deletedTask = await this.service.deleteTask(Number(id), req.user.id);
+
+    res.status(200).json(TaskMapper.toDTO(deletedTask));
+  };
 }

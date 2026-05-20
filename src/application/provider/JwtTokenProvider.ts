@@ -7,7 +7,7 @@ export class JWTTokenProvider implements TokenProvider {
 
   public generateToken = (payload: TokenPayload): string => {
     return jwt.sign(payload, this.secret, {
-      expiresIn: '1d',
+      expiresIn: '10m',
     });
   };
 

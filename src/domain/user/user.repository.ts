@@ -39,7 +39,7 @@ export default class UserRepository {
     return UserMapper.fromPrisma(pUser);
   };
 
-  public createUser = async (user: CreateUserDTO): Promise<User> => {
+  public create = async (user: CreateUserDTO): Promise<User> => {
     const pUser = await prisma.user.create({
       data: {
         email: user.email,
@@ -51,7 +51,7 @@ export default class UserRepository {
     return UserMapper.fromPrisma(pUser);
   };
 
-  public deleteUser = async (id: number): Promise<User | undefined> => {
+  public delete = async (id: number): Promise<User | undefined> => {
     const pUser = await prisma.user.findUnique({
       where: {
         id,
@@ -71,10 +71,7 @@ export default class UserRepository {
     return UserMapper.fromPrisma(pUser);
   };
 
-  public updateUser = async (
-    id: number,
-    data: UpdateUserDTO,
-  ): Promise<User | undefined> => {
+  public updateUser = async (id: number, data: UpdateUserDTO): Promise<User | undefined> => {
     const exists = await prisma.user.findUnique({
       where: {
         id,

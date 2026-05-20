@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import AppError from '../erros/AppError';
 import { ZodError } from 'zod';
-import { ErrorType } from '../shared';
+import { ERRORMESSAGE, ErrorType } from '../shared';
 
 const handler = (error: Error, _: Request, res: Response, __: NextFunction) => {
   if (error instanceof AppError) {
@@ -14,14 +14,14 @@ const handler = (error: Error, _: Request, res: Response, __: NextFunction) => {
   if (error instanceof ZodError) {
     return res.status(422).json({
       errorType: ErrorType.VALIDATION,
-      message: 'Validation error!',
+      message: ERRORMESSAGE.VALIDATION_ERROR,
       issues: error.issues,
     });
   }
 
   return res.status(500).json({
     errorType: ErrorType.INTERNAL_SERVER_ERROR,
-    message: 'Internal server error!',
+    message: error.message,
   });
 };
 

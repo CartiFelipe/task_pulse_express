@@ -1,47 +1,45 @@
 import AppError from '@/erros/AppError';
 import User from './user.entity';
 import UserRepository from './user.repository';
-import { ErrorType } from '@/shared';
+import { ERRORMESSAGE, ErrorType } from '@/shared';
 import { CreateUserDTO, UpdateUserDTO } from './user.schema';
 
 export default class UserService {
   constructor(private userRepository: UserRepository) {}
 
   public create = async (user: CreateUserDTO): Promise<User> => {
-    return this.userRepository.createUser(user);
+    return this.userRepository.create(user);
   };
 
-  public findById = async (id: number): Promise<User> => {
+  public getById = async (id: number): Promise<User> => {
     const user = await this.userRepository.getById(id);
 
     if (!user) {
-      throw new AppError('User not found!', 404, ErrorType.NOT_FOUND);
+      throw new AppError(ERRORMESSAGE.NOT_FOUND, 404, ErrorType.NOT_FOUND);
     }
 
     return user;
   };
 
-  public findByEmail = async (email: string): Promise<User> => {
+  public getByEmail = async (email: string): Promise<User> => {
     const user = await this.userRepository.getByEmail(email);
 
     if (!user) {
-      throw new AppError('User not found!', 404, ErrorType.NOT_FOUND);
+      throw new AppError(ERRORMESSAGE.NOT_FOUND, 404, ErrorType.NOT_FOUND);
     }
 
     return user;
   };
 
-  public findAll = async (): Promise<User[]> => {
-    console.log('cheguei SERVICE');
-
+  public getAll = async (): Promise<User[]> => {
     return this.userRepository.getAll();
   };
 
-  public deleteById = async (id: number): Promise<User> => {
-    const user = await this.userRepository.deleteUser(id);
+  public delete = async (id: number): Promise<User> => {
+    const user = await this.userRepository.delete(id);
 
     if (!user) {
-      throw new AppError('User not found!', 404, ErrorType.NOT_FOUND);
+      throw new AppError(ERRORMESSAGE.NOT_FOUND, 404, ErrorType.NOT_FOUND);
     }
 
     return user;
@@ -54,7 +52,7 @@ export default class UserService {
     const user = await this.userRepository.updateUser(id, userData);
 
     if (!user) {
-      throw new AppError('User not found!', 404, ErrorType.UPDATE_ERROR);
+      throw new AppError(ERRORMESSAGE.NOT_FOUND, 404, ErrorType.UPDATE_ERROR);
     }
 
     return user;

@@ -1,13 +1,17 @@
 import AppError from '@/erros/AppError';
-import { ErrorType } from '@/shared';
+import { ERRORMESSAGE, ErrorType } from '@/shared';
 import { Handler } from 'express';
-import { JWTTokenProvider } from '@/provider/JwtTokenProvider';
-const authMiddleware: Handler = (req, res, next) => {
+import { JWTTokenProvider } from '@/application/provider/JwtTokenProvider';
+const authMiddleware: Handler = (req, _, next) => {
   const authHeader = req.headers.authorization;
 
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) {
-    throw new AppError('Token is missing', 401, ErrorType.NOT_AUTHORIZED);
+    throw new AppError(
+      ERRORMESSAGE.NOT_AUTHORIZED,
+      401,
+      ErrorType.NOT_AUTHORIZED,
+    );
   }
 
   const tokenProvider = new JWTTokenProvider();

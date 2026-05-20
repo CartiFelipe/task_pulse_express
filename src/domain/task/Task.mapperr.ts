@@ -22,6 +22,7 @@ export default class TaskMapper {
       pTask.priority as priority,
       pTask.status as status,
       pTask.createdAt,
+      pTask.userId,
     );
   }
 
