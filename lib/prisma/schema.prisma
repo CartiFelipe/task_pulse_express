@@ -11,8 +11,6 @@ enum Status {
   TODO
   PENDING
   DONE
-
-  @@map("status")
 }
 
 enum Priority {
@@ -21,11 +19,34 @@ enum Priority {
   HIGH
 }
 
+enum Role {
+  admin
+  user
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  role     Role   @default(user)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks Task[]
+}
+
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   title       String
-  description String
-  priority    Priority
-  createdAt   DateTime @default(now())
-  status      Status   @default(TODO)
+  description String @default("Sem descrição")
+
+  priority Priority @default(LOW)
+  status   Status   @default(TODO)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -3,4 +3,5 @@ build
 dist
 .env
 lib/generated/prisma
- package-lock.json
+package-lock.json
+teste.js
